@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminoMedicine | Wireless ICG Projector</title>
+    <link rel="icon" href="images/logo_favicon.png"/>
+    
+
+    <!-- Fonts: Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',   /* Blue 50 */
+                            100: '#dbeafe',  /* Blue 100 */
+                            500: '#2563eb',  /* Blue 600 (Deep Blue Base) */
+                            600: '#1d4ed8',  /* Blue 700 */
+                            700: '#1e40af',  /* Blue 800 */
+                            900: '#172554',  /* Blue 950 */
+                        },
+                        dark: {
+                            900: '#0f172a', /* Slate 900 - Darker/Bluer grey */
+                            800: '#1e293b', /* Slate 800 */
+                            card: '#020617',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'glow': '0 0 20px rgba(37, 99, 235, 0.3)', /* Blue Glow */
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .text-balance { text-wrap: balance; }
+        
+        /* Animation Classes */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Grid Layout Utilities */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .bento-grid { grid-template-columns: repeat(3, 1fr); }
+            .col-span-2 { grid-column: span 2; }
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-primary-500 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 top-0 left-0 glass-panel border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2">
+                <!-- Modified: Reduced height from h-8 (32px) to h-[26px] (approx 0.8x) -->
+                <img src="images/lumino_logo.png" class="h-[26px] object-contain">
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+                <a href="#problem" class="hover:text-primary-600 transition-colors">Why Lumino</a>
+                <a href="#solution" class="hover:text-primary-600 transition-colors">Product</a>
+                <a href="#technology" class="hover:text-primary-600 transition-colors">Technology</a>
+                <a href="#contact" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-full transition-all shadow-lg shadow-primary-500/30">
+                    Contact Us
+                </a>
+            </div>
+            
+            <!-- Mobile Menu Icon -->
+            <button class="md:hidden text-slate-600 text-xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 1. Hero Section (Split Layout) -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Modified: Background Image Implementation -->
+        <div class="absolute inset-0 z-0">
+            <img src="images/lumino_bg_blue.jpg" alt="Background Texture" class="w-full h-full object-cover">
+            <!-- Overlay for text readability: Adjusted opacity to show more background -->
+            <div class="absolute inset-0 bg-gradient-to-r from-white/70 via-white/40 to-transparent"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <!-- Modified: Changed grid layout to 10 columns for exact 4:6 ratio -->
+            <div class="grid lg:grid-cols-10 gap-12 lg:gap-16 items-center">
+                
+                <!-- Text Content (Occupies 4/10) -->
+                <div class="lg:col-span-4 reveal-up">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur border border-primary-100 text-primary-600 text-xs font-bold tracking-wider mb-8 shadow-sm">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                        </span>
+                        NEW STANDARD IN SURGERY
+                    </div>
+                    <!-- Modified: Added whitespace-nowrap to span to prevent breaking, and adjusted responsive text sizes -->
+                    <h1 class="text-4xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] mb-6 text-balance">
+                        한 손에 들어오는<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-400 whitespace-nowrap">무선 ICG 프로젝터</span>
+                    </h1>
+                    <p class="text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl text-balance font-medium">
+                        복잡한 수술실의 한계를 넘어섭니다. LuminoImager C는 선이 없는 자유로움과<br/>압도적인 휴대성으로 새로운 수술 경험을 제공합니다.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#solution" class="inline-flex justify-center items-center px-8 py-4 bg-slate-900 text-white rounded-xl font-medium hover:bg-primary-900 transition-all shadow-xl hover:-translate-y-1">
+                            제품 자세히 보기
+                        </a>
+                        <a href="#contact" class="inline-flex justify-center items-center px-8 py-4 bg-white/80 backdrop-blur border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-white transition-all">
+                            문의하기
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Problem Section (Bento Grid) -->
+    <section id="problem" class="py-24 bg-white border-y border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16 reveal-up">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">기존 ICG 장비의 한계</h2>
+                <p class="text-slate-500 text-lg">왜 혁신이 필요했을까요? 기존의 고가, 대형 장비들은 병원과 의료진에게 부담이었습니다.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-red-600 text-xl mb-6">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">높은 도입 비용</h3>
+                    <p class="text-slate-500 leading-relaxed text-sm">1억~3억 원에 달하는 고가의 해외 장비는 일반 의료기관 도입에 큰 진입 장벽이었습니다.</p>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-200">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 text-xl mb-6">
+                        <i class="fa-solid fa-dolly"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">공간 제약</h3>
+                    <p class="text-slate-500 leading-relaxed text-sm">크고 무거운 카트형 장비는 좁은 수술실 내 이동이 어렵고 공간을 많이 차지합니다.</p>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-300">
+                    <div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 text-xl mb-6">
+                        <i class="fa-solid fa-eye-slash"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">시선 분산</h3>
+                    <p class="text-slate-500 leading-relaxed text-sm">수술 중 별도의 모니터를 확인해야 하므로 집도의의 시선이 분산되어 집중력이 저하됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Solution Section (Feature Layout) -->
+    <section id="solution" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="bg-white rounded-[2.5rem] p-8 lg:p-12 shadow-card border border-slate-100 overflow-hidden relative">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Product Image Area -->
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-50 aspect-square lg:aspect-auto h-full min-h-[400px] group reveal-up">
+                        <img src="images/lumino_in_OR_crop.png" alt="LuminoImager C Combined" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <!-- Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-white">
+                            <p class="text-sm font-medium opacity-90">Model</p>
+                            <p class="text-2xl font-bold">LuminoImager C</p>
+                        </div>
+                    </div>
+
+                    <!-- Features List -->
+                    <div class="reveal-up delay-100">
+                        <div class="mb-8">
+                            <span class="text-primary-600 font-bold tracking-wider text-sm uppercase block mb-2">Our Solution</span>
+                            <h2 class="text-4xl font-bold text-slate-900 mb-4">혁신적인 올인원 솔루션</h2>
+                            <p class="text-slate-500">모든 문제를 해결했습니다. 루미노이미저 C는 성능과 경제성, 편의성을 모두 잡은 유일한 선택입니다.</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Feature Item -->
+                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-wifi"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Wireless & Handy</h4>
+                                    <p class="text-sm text-slate-500 mt-1">배터리 내장형 무선 설계와 가벼운 무게로 수술실 어디든 자유롭게.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-desktop"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Direct View</h4>
+                                    <p class="text-sm text-slate-500 mt-1">장치 LCD를 통해 환부를 직접 보듯 확인. 시선 이동 최소화.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900">Cost Effective</h4>
+                                    <p class="text-sm text-slate-500 mt-1">독자적 국산화 기술로 성능은 유지하고 가격 거품은 제거.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Technology Section (Dark Mode Grid) -->
+    <section id="technology" class="py-24 bg-dark-900 text-white relative overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-900/30 rounded-full blur-[120px]"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-up">
+                <div class="max-w-xl">
+                    <span class="text-primary-500 font-bold text-sm tracking-wider uppercase mb-2 block">Visualization</span>
+                    <h2 class="text-4xl font-bold mb-4">보이지 않는 것을<br>보이게 하는 기술</h2>
+                    <p class="text-slate-400">수술 상황에 최적화된 3가지 이미징 모드를 제공하여 정확한 판단을 돕습니다.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Tech Card 1 -->
+                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up">
+                    <div class="aspect-video bg-black relative overflow-hidden">
+                        <img src="images/lumino_mode_color.png" alt="Color Mode" class="w-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                            <h3 class="text-lg font-bold">Color Mode</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">육안과 동일한 선명한 컬러 영상으로 전체적인 수술 부위 파악.</p>
+                    </div>
+                </div>
+
+                <!-- Tech Card 2 -->
+                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up delay-100">
+                    <div class="aspect-video bg-black relative overflow-hidden">
+                        <img src="images/lumino_mode_black.png" alt="Black Mode" class="w-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-2 h-2 rounded-full bg-white"></div>
+                            <h3 class="text-lg font-bold">Fluorescence Mode</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">ICG 표지자만 흰색으로 발광시켜 미세 혈관 및 림프절 식별.</p>
+                    </div>
+                </div>
+
+                <!-- Tech Card 3 -->
+                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up delay-200">
+                    <div class="aspect-video bg-black relative overflow-hidden">
+                        <div class="aspect-video bg-black relative overflow-hidden">
+                            <img src="images/lumino_mode_merge.png" alt="Merge Mode" class="w-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700">
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-2 h-2 rounded-full bg-primary-500"></div>
+                            <h3 class="text-lg font-bold">Merge Mode</h3>
+                        </div>
+                        <p class="text-sm text-slate-400">컬러 영상 위에 형광 신호를 녹색으로 합성하여 위치 동시 파악.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Features Detail Section -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <!-- Left: Detail Image -->
+                <div class="lg:col-span-5 reveal-up flex justify-center">
+                    <div class="relative rounded-2xl overflow-hidden w-4/5 group">
+                        <img src="images/lumino.png" alt="Device Detail" class="w-full h-auto transform transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                </div>
+
+                <!-- Right: Specs Grid -->
+                <div class="lg:col-span-7 reveal-up delay-100">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-8">사용자 중심의 정밀한 기능</h2>
+                    
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        <!-- Item -->
+                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
+                            <i class="fa-solid fa-crosshairs text-primary-600 text-2xl mb-4"></i>
+                            <h4 class="font-bold text-slate-900 mb-2">정밀 초점 조절</h4>
+                            <p class="text-sm text-slate-500">Auto Focus 및 수동 초점으로 빠르고 정확한 심도 확보.</p>
+                        </div>
+                        <!-- Item -->
+                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
+                            <i class="fa-solid fa-sliders text-primary-600 text-2xl mb-4"></i>
+                            <h4 class="font-bold text-slate-900 mb-2">LED 세기 조절</h4>
+                            <p class="text-sm text-slate-500">수술 환경에 맞춰 8단계로 밝기를 세밀하게 조절.</p>
+                        </div>
+                        <!-- Item -->
+                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
+                            <i class="fa-solid fa-video text-primary-600 text-2xl mb-4"></i>
+                            <h4 class="font-bold text-slate-900 mb-2">원터치 녹화</h4>
+                            <p class="text-sm text-slate-500">버튼 하나로 시술 장면 캡처 및 동영상 즉시 녹화.</p>
+                        </div>
+                        <!-- Item -->
+                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
+                            <i class="fa-brands fa-usb text-primary-600 text-2xl mb-4"></i>
+                            <h4 class="font-bold text-slate-900 mb-2">USB-C 연결</h4>
+                            <p class="text-sm text-slate-500">PC 및 모바일 기기로 손쉽게 데이터 전송 및 관리.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Credibility (Patents & Awards) -->
+    <section class="py-24 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-12 reveal-up">
+                <span class="text-primary-600 font-bold text-sm tracking-wider uppercase">Credibility</span>
+                <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2 mb-4">검증된 기술력, 인정받는 혁신</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto">국내 최고 권위의 수상과 탄탄한 특허 포트폴리오로<br class="hidden sm:block"> 의료기기 시장의 새로운 기준을 만들어갑니다.</p>
+            </div>
+            
+            <!-- 1. Highlight Banner: IR52 Award -->
+            <div class="reveal-up">
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-blue-600 shadow-xl mb-12 group">
+                    <!-- Decor Background -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 group-hover:bg-white/20 transition-colors duration-500"></div>
+                    
+                    <div class="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center text-center md:text-left gap-6 md:gap-10">
+                        <div class="flex-shrink-0 w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-yellow-300 shadow-inner">
+                            <i class="fa-solid fa-trophy text-4xl drop-shadow-md"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="inline-block px-3 py-1 bg-yellow-400/20 border border-yellow-300/50 text-yellow-100 text-xs font-bold rounded-full mb-3">GRAND PRIZE</div>
+                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">2025 IR52 장영실상 수상</h3>
+                            <p class="text-blue-100 text-lg">기술적 우수성을 인정받은 혁신 제품 (2025년 44주차 선정)</p>
+                        </div>
+                        <div class="hidden md:block">
+                            <i class="fa-solid fa-medal text-8xl text-white/10 rotate-12"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Categorized 3-Column Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+                
+                <!-- Column 1: Registered Patents -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-primary-200 hover:shadow-lg transition-all reveal-up delay-100 h-full">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <i class="fa-solid fa-certificate text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-lg">핵심 특허 등록</h4>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">증강현실 투영장치</strong>
+                                <span class="text-xs text-slate-500">국내 특허 등록 완료</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">백색 여기광 생성 장치 및 방법</strong>
+                                <span class="text-xs text-slate-500">국내 특허 등록 완료</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">Augmented Reality Device</strong>
+                                <span class="text-xs text-slate-500">미국 특허 등록 완료</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">White Excitation Light Gen.</strong>
+                                <span class="text-xs text-slate-500">미국 특허 등록 완료</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Partnership -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-purple-200 hover:shadow-lg transition-all reveal-up delay-200 h-full">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <i class="fa-solid fa-handshake text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-lg">전략적 파트너십</h4>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-star text-purple-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">국립암센터 기술 협력</strong>
+                                <span class="text-xs text-slate-500">전용실시권 계약 체결</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-file-contract text-purple-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">증강현실영상 투영 시스템</strong>
+                                <span class="text-xs text-slate-500">원천 기술 확보</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mt-6 p-4 bg-purple-50 rounded-xl text-center">
+                        <p class="text-xs text-purple-700 font-medium">국가 주요 기관과의 협력을 통해<br>기술의 신뢰성을 높였습니다.</p>
+                    </div>
+                </div>
+
+                <!-- Column 3: Research & Design -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-emerald-200 hover:shadow-lg transition-all reveal-up delay-300 h-full">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <i class="fa-solid fa-pen-ruler text-lg"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-lg">연구 및 디자인 출원</h4>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-spinner text-emerald-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">멸균 가능 소형 광학기기</strong>
+                                <span class="text-xs text-slate-500">특허 출원 중</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-palette text-emerald-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">의료용 형광 촬영기</strong>
+                                <span class="text-xs text-slate-500">디자인 등록 출원</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-shield-halved text-emerald-500 mt-1 flex-shrink-0"></i>
+                            <div>
+                                <strong class="block text-slate-800 text-sm">의료용 오염 방지 커버</strong>
+                                <span class="text-xs text-slate-500">디자인 등록 출원</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Innovation (AR) Section -->
+    <section class="relative h-[600px] flex items-center justify-center bg-black overflow-hidden group">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img src="images/lumino_in_OR.png" alt="AR Concept" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-[2s]">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-6 max-w-3xl reveal-up">
+            <div class="inline-block px-4 py-1.5 border border-primary-500/50 rounded-full bg-primary-900 text-white text-sm font-bold mb-6">
+                NEXT INNOVATION
+            </div>
+            <h2 class="text-4xl md:text-6xl font-bold text-white mb-6">AR Projection Technology</h2>
+            <p class="text-xl text-slate-300 leading-relaxed mb-10">
+                스크린이 아닌 환자의 피부 위에 직접 투사합니다.<br>
+                세계 최초 <span class="text-primary-400 font-semibold">증강현실(AR) 영상 투영 시스템</span> 특허 보유.
+            </p>
+            <button class="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-slate-200 transition-colors">
+                미래 기술 더 알아보기
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-white pt-20 pb-10 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 mb-16">
+                <div>
+                    <!-- Modified: Reduced height from h-8 to h-[26px] for consistency -->
+                    <img src="images/lumino_logo.png" alt="LuminoMedicine" class="h-[26px] mb-6 opacity-80">
+                    <p class="text-slate-500 max-w-sm leading-relaxed">
+                        혁신적인 의료 기술로 더 나은 수술 환경을 만들어갑니다.<br>
+                        제품 데모 신청 및 견적 문의는 언제든 환영합니다.
+                    </p>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div class="grid gap-4">
+                        <div class="flex items-center gap-4 text-slate-600">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <span>경기도 안양시 동안구 시민대로 401 1602호</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-slate-600">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <span>070-4727-2510</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-slate-600">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <span>lm@luminomedison.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+                <p>&copy; 2025 LuminoMedicine. All Rights Reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-slate-600">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-600">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Reveal Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Reveal only once
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-up');
+            revealElements.forEach(el => observer.observe(el));
+            
+            // Mobile Menu Toggle (Simple implementation)
+            const menuBtn = document.querySelector('button.md\\:hidden');
+            // In a real implementation, you would toggle a hidden mobile menu div here.
+            if(menuBtn) {
+                menuBtn.addEventListener('click', () => {
+                   alert('모바일 메뉴 준비 중입니다.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
