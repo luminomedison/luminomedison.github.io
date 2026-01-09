@@ -1,772 +1,860 @@
 <!DOCTYPE html>
 <html lang="ko" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuminoMedicine | Wireless ICG Projector</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="images/logo_favicon.png"/>
+    <title>Lumino Medicine</title>
     
-
-    <!-- Fonts: Pretendard -->
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Tailwind CSS -->
+    <!-- 1. Tailwind CSS 설정 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Pretendard', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',   /* Blue 50 */
-                            100: '#dbeafe',  /* Blue 100 */
-                            500: '#2563eb',  /* Blue 600 (Deep Blue Base) */
-                            600: '#1d4ed8',  /* Blue 700 */
-                            700: '#1e40af',  /* Blue 800 */
-                            900: '#172554',  /* Blue 950 */
-                        },
-                        dark: {
-                            900: '#0f172a', /* Slate 900 - Darker/Bluer grey */
-                            800: '#1e293b', /* Slate 800 */
-                            card: '#020617',
-                        }
-                    },
-                    boxShadow: {
-                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-                        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                        'glow': '0 0 20px rgba(37, 99, 235, 0.3)', /* Blue Glow */
-                    }
-                }
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Pretendard Variable"', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', "Helvetica Neue", 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+            },
+            colors: {
+              brand: {
+                50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e',
+                gold: '#d4af37', dark: '#050505', card: '#121212',
+              }
+            },
+            backgroundImage: {
+              'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
             }
+          }
         }
+      }
     </script>
+
+    <!-- 2. 폰트 로드 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- 3. React 및 라이브러리 로드 (CDN) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        /* Custom Utilities */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        .text-balance { text-wrap: balance; }
-        
-        /* Animation Classes */
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-up.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Grid Layout Utilities */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
-        }
-        @media (min-width: 768px) {
-            .bento-grid { grid-template-columns: repeat(3, 1fr); }
-            .col-span-2 { grid-column: span 2; }
-        }
+      body {
+        background-color: #050505;
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+      /* 커스텀 스크롤바 */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #050505; }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-primary-500 selection:text-white">
+<body>
+    <div id="root"></div>
 
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 transition-all duration-300 top-0 left-0 glass-panel border-b border-slate-200/50">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="#" class="flex items-center gap-2">
-                <img src="images/lumino_logo.png" class="h-[26px] object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <span class="text-xl font-bold text-slate-900 hidden">LuminoMedicine</span>
-            </a>
+    <script type="text/babel">
+        // --- 전역 객체 설정 ---
+        const { useState, useEffect } = React;
+        const { motion, useScroll, useTransform, AnimatePresence } = window.Motion;
 
-            <!-- Right Side Controls -->
-            <div class="flex items-center gap-4 md:gap-8">
-                <!-- Desktop Links -->
-                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-                    <a href="#problem" class="hover:text-primary-600 transition-colors" data-i18n="nav_why">Why Lumino</a>
-                    <a href="#solution" class="hover:text-primary-600 transition-colors" data-i18n="nav_product">Product</a>
-                    <a href="#technology" class="hover:text-primary-600 transition-colors" data-i18n="nav_tech">Technology</a>
-                    <a href="#contact" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-full transition-all shadow-lg shadow-primary-500/30" data-i18n="nav_contact">
-                        Contact Us
-                    </a>
-                </div>
+        // --- 아이콘 컴포넌트 (SVG 직접 정의) ---
+        const IconBase = ({ children, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const Globe = (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></IconBase>;
+        const Menu = (p) => <IconBase {...p}><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></IconBase>;
+        const X = (p) => <IconBase {...p}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconBase>;
+        const ChevronRight = (p) => <IconBase {...p}><path d="m9 18 6-6-6-6"/></IconBase>;
+        const ArrowRight = (p) => <IconBase {...p}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></IconBase>;
+        const Phone = (p) => <IconBase {...p}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></IconBase>;
+        const Mail = (p) => <IconBase {...p}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></IconBase>;
+        const MapPin = (p) => <IconBase {...p}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></IconBase>;
+        const Trophy = (p) => <IconBase {...p}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></IconBase>;
+        const PlayCircle = (p) => <IconBase {...p}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></IconBase>;
+        const Microscope = (p) => <IconBase {...p}><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></IconBase>;
+        const Wifi = (p) => <IconBase {...p}><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" x2="12.01" y1="20" y2="20"/></IconBase>;
+        const Eye = (p) => <IconBase {...p}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></IconBase>;
+        const Coins = (p) => <IconBase {...p}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></IconBase>;
+        const Box = (p) => <IconBase {...p}><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></IconBase>;
+        const MonitorOff = (p) => <IconBase {...p}><path d="M17 17H4a2 2 0 0 1-2-2V5c0-1.5 1-2 1-2"/><path d="M22 15V5a2 2 0 0 0-2-2H9"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="m2 2 20 20"/></IconBase>;
+        const ScrollText = (p) => <IconBase {...p}><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></IconBase>;
+        const Building2 = (p) => <IconBase {...p}><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></IconBase>;
+        const Feather = (p) => <IconBase {...p}><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" x2="2" y1="8" y2="22"/><line x1="17.5" x2="9" y1="15" y2="15"/></IconBase>;
 
-                <!-- Language Toggle Button -->
-                <button id="langToggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors text-sm font-bold text-slate-600">
-                    <i class="fa-solid fa-globe text-primary-500"></i>
-                    <span id="langText">KO</span>
-                </button>
-                
-                <!-- Mobile Menu Icon -->
-                <button class="md:hidden text-slate-600 text-xl">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 1. Hero Section (Split Layout) -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img src="images/lumino_bg_blue.jpg" alt="Background Texture" class="w-full h-full object-cover object-right" onerror="this.src='https://placehold.co/1920x1080/eff6ff/eff6ff';">
-            <div class="absolute inset-0 bg-gradient-to-r from-white/70 via-white/40 to-transparent"></div>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="grid lg:grid-cols-10 gap-12 lg:gap-16 items-center">
-                
-                <!-- Text Content -->
-                <div class="lg:col-span-4 reveal-up">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 backdrop-blur border border-primary-100 text-primary-600 text-xs font-bold tracking-wider mb-8 shadow-sm">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-                        </span>
-                        NEW STANDARD IN SURGERY
-                    </div>
-                    
-                    <h1 class="text-4xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1] mb-6 text-balance">
-                        <span data-i18n="hero_title_1">한 손에 들어오는</span><br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-400 whitespace-nowrap" data-i18n="hero_title_2">무선 ICG 프로젝터</span>
-                    </h1>
-                    <p class="text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl text-balance font-medium" data-i18n="hero_desc">
-                        복잡한 수술실의 한계를 넘어섭니다. LuminoImager C는 선이 없는 자유로움과<br/>압도적인 휴대성으로 새로운 수술 경험을 제공합니다.
-                    </p>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#solution" class="inline-flex justify-center items-center px-8 py-4 bg-slate-900 text-white rounded-xl font-medium hover:bg-primary-900 transition-all shadow-xl hover:-translate-y-1" data-i18n="hero_btn_more">
-                            제품 자세히 보기
-                        </a>
-                        <a href="#contact" class="inline-flex justify-center items-center px-8 py-4 bg-white/80 backdrop-blur border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-white transition-all" data-i18n="hero_btn_contact">
-                            문의하기
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. Problem Section -->
-    <section id="problem" class="py-24 bg-white border-y border-slate-100">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal-up">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4" data-i18n="prob_title">기존 ICG 장비의 한계</h2>
-                <p class="text-slate-500 text-lg" data-i18n="prob_desc">왜 혁신이 필요했을까요? 기존의 고가, 대형 장비들은 병원과 의료진에게 부담이었습니다.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-100">
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center text-red-600 text-xl mb-6">
-                        <i class="fa-solid fa-coins"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="prob_1_title">높은 도입 비용</h3>
-                    <p class="text-slate-500 leading-relaxed text-sm" data-i18n="prob_1_desc">1억~3억 원에 달하는 고가의 해외 장비는 일반 의료기관 도입에 큰 진입 장벽이었습니다.</p>
-                </div>
-                
-                <!-- Card 2 -->
-                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-200">
-                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 text-xl mb-6">
-                        <i class="fa-solid fa-dolly"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="prob_2_title">공간 제약</h3>
-                    <p class="text-slate-500 leading-relaxed text-sm" data-i18n="prob_2_desc">크고 무거운 카트형 장비는 좁은 수술실 내 이동이 어렵고 공간을 많이 차지합니다.</p>
-                </div>
-                
-                <!-- Card 3 -->
-                <div class="bg-slate-50 rounded-2xl p-8 hover:bg-white hover:shadow-hover border border-transparent hover:border-slate-100 transition-all duration-300 reveal-up delay-300">
-                    <div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center text-slate-600 text-xl mb-6">
-                        <i class="fa-solid fa-eye-slash"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="prob_3_title">시선 분산</h3>
-                    <p class="text-slate-500 leading-relaxed text-sm" data-i18n="prob_3_desc">수술 중 별도의 모니터를 확인해야 하므로 집도의의 시선이 분산되어 집중력이 저하됩니다.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. Solution Section -->
-    <section id="solution" class="py-24 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="bg-white rounded-[2.5rem] p-8 lg:p-12 shadow-card border border-slate-100 overflow-hidden relative">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
-                    
-                    <!-- Product Image Area -->
-                    <div class="relative rounded-2xl overflow-hidden bg-slate-50 aspect-square lg:aspect-auto h-full min-h-[400px] group reveal-up">
-                        <img src="images/lumino_in_OR_crop.png" alt="LuminoImager C Combined" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://placehold.co/600x600/e2e8f0/94a3b8?text=Product+Image';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 text-white">
-                            <p class="text-sm font-medium opacity-90">Model</p>
-                            <p class="text-2xl font-bold">LuminoImager C</p>
-                        </div>
-                    </div>
-
-                    <!-- Features List -->
-                    <div class="reveal-up delay-100">
-                        <div class="mb-8">
-                            <span class="text-primary-600 font-bold tracking-wider text-sm uppercase block mb-2">Our Solution</span>
-                            <h2 class="text-4xl font-bold text-slate-900 mb-4" data-i18n="sol_title">혁신적인 올인원 솔루션</h2>
-                            <p class="text-slate-500" data-i18n="sol_desc">모든 한계를 뛰어넘었습니다. 루미노이미저 C는 성능과 경제성, 편의성을 모두 잡은 유일한 선택입니다.</p>
-                        </div>
-
-                        <div class="space-y-6">
-                            <!-- Feature Item -->
-                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
-                                    <i class="fa-solid fa-wifi"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900">Wireless & Handy</h4>
-                                    <p class="text-sm text-slate-500 mt-1" data-i18n="sol_1_desc">배터리 내장형 무선 설계와 가벼운 무게로 수술실 어디든 자유롭게</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
-                                    <i class="fa-solid fa-desktop"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900">Direct View</h4>
-                                    <p class="text-sm text-slate-500 mt-1" data-i18n="sol_2_desc">장치 LCD를 통해 환부를 직접 보듯 확인. 시선 이동 최소화</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
-                                    <i class="fa-solid fa-chart-line"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900">Cost Effective</h4>
-                                    <p class="text-sm text-slate-500 mt-1" data-i18n="sol_3_desc">독자적 국산화 기술로 성능은 유지하고 가격 거품은 제거</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. Technology Section -->
-    <section id="technology" class="py-24 bg-dark-900 text-white relative overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-900/30 rounded-full blur-[120px]"></div>
-
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-up">
-                <div class="max-w-xl">
-                    <span class="text-primary-500 font-bold text-sm tracking-wider uppercase mb-2 block">Visualization</span>
-                    <h2 class="text-4xl font-bold mb-4" data-i18n="tech_title">보이지 않는 것을<br>보이게 하는 기술</h2>
-                    <p class="text-slate-400" data-i18n="tech_desc">수술 상황에 최적화된 3가지 이미징 모드를 제공하여 정확한 판단을 돕습니다.</p>
-                </div>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Tech Card 1 -->
-                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up">
-                    <div class="aspect-video bg-black relative overflow-hidden">
-                        <img src="images/lumino_mode_color.png" alt="Color Mode" class="w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/400x225/1e293b/475569?text=Color+Mode';">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                            <h3 class="text-lg font-bold">Color Mode</h3>
-                        </div>
-                        <p class="text-sm text-slate-400" data-i18n="tech_1_desc">육안과 동일한 선명한 컬러 영상으로 전체적인 수술 부위 파악</p>
-                    </div>
-                </div>
-
-                <!-- Tech Card 2 -->
-                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up delay-100">
-                    <div class="aspect-video bg-black relative overflow-hidden">
-                        <img src="images/lumino_mode_black.png" alt="Black Mode" class="w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/400x225/000000/ffffff?text=Grayscale+Mode';">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-2 h-2 rounded-full bg-white"></div>
-                            <h3 class="text-lg font-bold">Grayscale Mode</h3>
-                        </div>
-                        <p class="text-sm text-slate-400" data-i18n="tech_2_desc">ICG 표지자만 흰색으로 발광시켜 미세 혈관 및 림프절 식별</p>
-                    </div>
-                </div>
-
-                <!-- Tech Card 3 -->
-                <div class="group bg-dark-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-primary-500/50 transition-all duration-500 hover:shadow-glow reveal-up delay-200">
-                    <div class="aspect-video bg-black relative overflow-hidden">
-                        <img src="images/lumino_mode_merge.png" alt="Merge Mode" class="w-full h-full object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/400x225/1e293b/22c55e?text=Merge+Mode';">
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <div class="w-2 h-2 rounded-full bg-primary-500"></div>
-                            <h3 class="text-lg font-bold">Merge Mode</h3>
-                        </div>
-                        <p class="text-sm text-slate-400" data-i18n="tech_3_desc">컬러 영상 위에 형광 신호를 녹색으로 합성하여 위치 동시 파악</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. Features Detail Section -->
-    <section class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-12 gap-12 items-center">
-                <!-- Left: Detail Image -->
-                <div class="lg:col-span-5 reveal-up flex justify-center">
-                    <div class="relative rounded-2xl overflow-hidden w-4/5 group">
-                        <img src="images/lumino.png" alt="Device Detail" class="w-full h-auto transform transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/400x600/e2e8f0/94a3b8?text=Detail+View';">
-                    </div>
-                </div>
-
-                <!-- Right: Specs Grid -->
-                <div class="lg:col-span-7 reveal-up delay-100">
-                    <span class="text-primary-600 font-bold tracking-wider text-sm uppercase block mb-2">Function</span>
-                    <h2 class="text-3xl font-bold text-slate-900 mb-8" data-i18n="func_title">사용자 중심의 정밀한 기능</h2>
-                    
-                    <div class="grid sm:grid-cols-2 gap-6">
-                        <!-- Item -->
-                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
-                            <i class="fa-solid fa-crosshairs text-primary-600 text-2xl mb-4"></i>
-                            <h4 class="font-bold text-slate-900 mb-2" data-i18n="func_1_title">정밀 초점 조절</h4>
-                            <p class="text-sm text-slate-500" data-i18n="func_1_desc">Auto Focus 및 수동 초점으로 빠르고 정확한 심도 확보</p>
-                        </div>
-                        <!-- Item -->
-                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
-                            <i class="fa-solid fa-sliders text-primary-600 text-2xl mb-4"></i>
-                            <h4 class="font-bold text-slate-900 mb-2" data-i18n="func_2_title">LED 세기 조절</h4>
-                            <p class="text-sm text-slate-500" data-i18n="func_2_desc">수술 환경에 맞춰 8단계로 밝기를 세밀하게 조절</p>
-                        </div>
-                        <!-- Item -->
-                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
-                            <i class="fa-solid fa-video text-primary-600 text-2xl mb-4"></i>
-                            <h4 class="font-bold text-slate-900 mb-2" data-i18n="func_3_title">원터치 녹화</h4>
-                            <p class="text-sm text-slate-500" data-i18n="func_3_desc">버튼 하나로 시술 장면 캡처 및 동영상 즉시 녹화</p>
-                        </div>
-                        <!-- Item -->
-                        <div class="p-6 rounded-2xl border border-slate-100 hover:border-primary-200 hover:shadow-card transition-all bg-slate-50/50">
-                            <i class="fa-brands fa-usb text-primary-600 text-2xl mb-4"></i>
-                            <h4 class="font-bold text-slate-900 mb-2" data-i18n="func_4_title">USB-C 연결</h4>
-                            <p class="text-sm text-slate-500" data-i18n="func_4_desc">PC 및 모바일 기기로 손쉽게 데이터 전송 및 관리</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. Credibility -->
-    <section class="py-24 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-12 reveal-up">
-                <span class="text-primary-600 font-bold text-sm tracking-wider uppercase">Credibility</span>
-                <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mt-2 mb-4" data-i18n="cred_title">검증된 기술력, 인정받는 혁신</h2>
-                <p class="text-slate-500 max-w-2xl mx-auto" data-i18n="cred_desc">국내 최고 권위의 수상과 탄탄한 특허 포트폴리오로<br class="hidden sm:block"> 의료기기 시장의 새로운 기준을 만들어갑니다.</p>
-            </div>
-            
-            <!-- Award -->
-            <div class="reveal-up">
-                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-blue-600 shadow-xl mb-12 group">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 group-hover:bg-white/20 transition-colors duration-500"></div>
-                    
-                    <div class="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center text-center md:text-left gap-6 md:gap-10">
-                        <div class="flex-shrink-0 w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-yellow-300 shadow-inner">
-                            <i class="fa-solid fa-trophy text-4xl drop-shadow-md"></i>
-                        </div>
-                        <div class="flex-grow">
-                            <div class="inline-block px-3 py-1 bg-yellow-400/20 border border-yellow-300/50 text-yellow-100 text-xs font-bold rounded-full mb-3">GRAND PRIZE</div>
-                            <h3 class="text-2xl md:text-3xl font-bold text-white mb-2" data-i18n="award_title">2025 IR52 장영실상 수상</h3>
-                            <p class="text-blue-100 text-lg" data-i18n="award_desc">기술적 우수성을 인정받은 혁신 제품 (2025년 44주차 선정)</p>
-                        </div>
-                        <div class="hidden md:block">
-                            <i class="fa-solid fa-medal text-8xl text-white/10 rotate-12"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3-Column Grid -->
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Column 1 -->
-                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-primary-200 hover:shadow-lg transition-all reveal-up delay-100 h-full">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-                        <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                            <i class="fa-solid fa-certificate text-lg"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-lg" data-i18n="pat_1_title">핵심 특허 등록</h4>
-                    </div>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="pat_1_item_1">증강현실 투영장치</strong>
-                                <span class="text-xs text-slate-500" data-i18n="pat_kr">국내 특허 등록 완료</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="pat_1_item_2">백색 여기광 생성 장치 및 방법</strong>
-                                <span class="text-xs text-slate-500" data-i18n="pat_kr">국내 특허 등록 완료</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm">Augmented Reality Device</strong>
-                                <span class="text-xs text-slate-500" data-i18n="pat_us">미국 특허 등록 완료</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-check text-blue-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm">White Excitation Light Gen.</strong>
-                                <span class="text-xs text-slate-500" data-i18n="pat_us">미국 특허 등록 완료</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Column 2 -->
-                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-purple-200 hover:shadow-lg transition-all reveal-up delay-200 h-full">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-                        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                            <i class="fa-solid fa-handshake text-lg"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-lg" data-i18n="part_title">전략적 파트너십</h4>
-                    </div>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-star text-purple-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="part_1_item">국립암센터 기술 협력</strong>
-                                <span class="text-xs text-slate-500" data-i18n="part_1_desc">전용실시권 계약 체결</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-file-contract text-purple-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="part_2_item">증강현실영상 투영 시스템</strong>
-                                <span class="text-xs text-slate-500" data-i18n="part_2_desc">원천 기술 확보</span>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="mt-6 p-4 bg-purple-50 rounded-xl text-center">
-                        <p class="text-xs text-purple-700 font-medium" data-i18n="part_note">국가 주요 기관과의 협력을 통해<br>기술의 신뢰성을 높였습니다.</p>
-                    </div>
-                </div>
-
-                <!-- Column 3 -->
-                <div class="bg-white rounded-2xl p-8 border border-slate-200 hover:border-emerald-200 hover:shadow-lg transition-all reveal-up delay-300 h-full">
-                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                            <i class="fa-solid fa-pen-ruler text-lg"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-lg" data-i18n="res_title">연구 및 디자인 출원</h4>
-                    </div>
-                    <ul class="space-y-4">
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-spinner text-emerald-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="res_1_item">멸균 가능 소형 광학기기</strong>
-                                <span class="text-xs text-slate-500" data-i18n="res_pending">특허 출원 중</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-palette text-emerald-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="res_2_item">의료용 형광 촬영기</strong>
-                                <span class="text-xs text-slate-500" data-i18n="res_design">디자인 등록 출원</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fa-solid fa-shield-halved text-emerald-500 mt-1 flex-shrink-0"></i>
-                            <div>
-                                <strong class="block text-slate-800 text-sm" data-i18n="res_3_item">의료용 오염 방지 커버</strong>
-                                <span class="text-xs text-slate-500" data-i18n="res_design">디자인 등록 출원</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. Innovation (AR) Section -->
-    <section class="relative h-[600px] flex items-center justify-center bg-black overflow-hidden group">
-        <div class="absolute inset-0">
-            <img src="images/lumino_in_OR.png" alt="AR Concept" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-[2s]" onerror="this.src='https://placehold.co/1920x1080/000000/333333?text=AR+Concept';">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-        </div>
-
-        <div class="relative z-10 text-center px-6 max-w-3xl reveal-up">
-            <div class="inline-block px-4 py-1.5 border border-primary-500/50 rounded-full bg-primary-900 text-white text-sm font-bold mb-6">
-                NEXT INNOVATION
-            </div>
-            <h2 class="text-4xl md:text-6xl font-bold text-white mb-6">AR Projection Technology</h2>
-            <p class="text-xl text-slate-300 leading-relaxed mb-10">
-                <span data-i18n="ar_desc_1">스크린이 아닌 환자의 피부 위에 직접 투사합니다.</span><br>
-                <span data-i18n="ar_desc_2_pre">세계 최초</span> <span class="text-primary-400 font-semibold" data-i18n="ar_desc_2_hl">증강현실(AR) 영상 투영 시스템</span> <span data-i18n="ar_desc_2_post">특허 보유</span>
-            </p>
-            <button class="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-slate-200 transition-colors" data-i18n="ar_btn">
-                미래 기술 더 알아보기
-            </button>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="bg-white pt-20 pb-10 border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-12 mb-16">
-                <div>
-                    <div class="flex items-center gap-2 mb-6">
-                        <img src="images/lumino_logo.png" alt="LuminoMedicine" class="h-[26px] opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <span class="text-xl font-bold text-slate-900 hidden">LuminoMedicine</span>
-                    </div>
-                    <p class="text-slate-500 max-w-sm leading-relaxed" data-i18n="footer_desc">
-                        혁신적인 의료 기술로 더 나은 수술 환경을 만들어갑니다.<br>
-                        제품 데모 신청 및 견적 문의는 언제든 환영합니다.
-                    </p>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <div class="grid gap-4">
-                        <div class="flex items-center gap-4 text-slate-600">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <span data-i18n="addr">경기도 안양시 동안구 시민대로 401 1602호</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-slate-600">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                                <i class="fa-solid fa-phone"></i>
-                            </div>
-                            <span>070-4727-2510</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-slate-600">
-                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                                <i class="fa-solid fa-envelope"></i>
-                            </div>
-                            <span>lm@luminomedison.com</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
-                <p>&copy; 2025 LuminoMedicine. All Rights Reserved.</p>
-                <div class="flex gap-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-slate-600">Privacy Policy</a>
-                    <a href="#" class="hover:text-slate-600">Terms of Service</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script>
-        // Language Translations
-        const translations = {
-            'ko': {
-                'nav_why': 'Why Lumino',
-                'nav_product': 'Product',
-                'nav_tech': 'Technology',
-                'nav_contact': 'Contact Us',
-                'hero_title_1': '한 손에 들어오는',
-                'hero_title_2': '무선 ICG 프로젝터',
-                'hero_desc': '복잡한 수술실의 한계를 넘어섭니다. LuminoImager C는 선이 없는 자유로움과<br/>압도적인 휴대성으로 새로운 수술 경험을 제공합니다.',
-                'hero_btn_more': '제품 자세히 보기',
-                'hero_btn_contact': '문의하기',
-                'prob_title': '기존 ICG 장비의 한계',
-                'prob_desc': '왜 혁신이 필요했을까요? 기존의 고가, 대형 장비들은 병원과 의료진에게 부담이었습니다.',
-                'prob_1_title': '높은 도입 비용',
-                'prob_1_desc': '1억~3억 원에 달하는 고가의 해외 장비는 일반 의료기관 도입에 큰 진입 장벽이었습니다.',
-                'prob_2_title': '공간 제약',
-                'prob_2_desc': '크고 무거운 카트형 장비는 좁은 수술실 내 이동이 어렵고 공간을 많이 차지합니다.',
-                'prob_3_title': '시선 분산',
-                'prob_3_desc': '수술 중 별도의 모니터를 확인해야 하므로 집도의의 시선이 분산되어 집중력이 저하됩니다.',
-                'sol_title': '혁신적인 올인원 솔루션',
-                'sol_desc': '모든 한계를 뛰어넘었습니다. 루미노이미저 C는 성능과 경제성, 편의성을 모두 잡은 유일한 선택입니다.',
-                'sol_1_desc': '배터리 내장형 무선 설계와 가벼운 무게로 수술실 어디든 자유롭게',
-                'sol_2_desc': '장치 LCD를 통해 환부를 직접 보듯 확인. 시선 이동 최소화',
-                'sol_3_desc': '독자적 국산화 기술로 성능은 유지하고 가격 거품은 제거',
-                'tech_title': '보이지 않는 것을<br>보이게 하는 기술',
-                'tech_desc': '수술 상황에 최적화된 3가지 이미징 모드를 제공하여 정확한 판단을 돕습니다.',
-                'tech_1_desc': '육안과 동일한 선명한 컬러 영상으로 전체적인 수술 부위 파악',
-                'tech_2_desc': 'ICG 표지자만 흰색으로 발광시켜 미세 혈관 및 림프절 식별',
-                'tech_3_desc': '컬러 영상 위에 형광 신호를 녹색으로 합성하여 위치 동시 파악',
-                'func_title': '사용자 중심의 정밀한 기능',
-                'func_1_title': '정밀 초점 조절',
-                'func_1_desc': 'Auto Focus 및 수동 초점으로 빠르고 정확한 심도 확보',
-                'func_2_title': 'LED 세기 조절',
-                'func_2_desc': '수술 환경에 맞춰 8단계로 밝기를 세밀하게 조절',
-                'func_3_title': '원터치 녹화',
-                'func_3_desc': '버튼 하나로 시술 장면 캡처 및 동영상 즉시 녹화',
-                'func_4_title': 'USB-C 연결',
-                'func_4_desc': 'PC 및 모바일 기기로 손쉽게 데이터 전송 및 관리',
-                'cred_title': '검증된 기술력, 인정받는 혁신',
-                'cred_desc': '국내 최고 권위의 수상과 탄탄한 특허 포트폴리오로<br class="hidden sm:block"> 의료기기 시장의 새로운 기준을 만들어갑니다.',
-                'award_title': '2025 IR52 장영실상 수상',
-                'award_desc': '기술적 우수성을 인정받은 혁신 제품 (2025년 44주차 선정)',
-                'pat_1_title': '핵심 특허 등록',
-                'pat_1_item_1': '증강현실 투영장치',
-                'pat_1_item_2': '백색 여기광 생성 장치 및 방법',
-                'pat_kr': '국내 특허 등록 완료',
-                'pat_us': '미국 특허 등록 완료',
-                'part_title': '전략적 파트너십',
-                'part_1_item': '국립암센터 기술 협력',
-                'part_1_desc': '전용실시권 계약 체결',
-                'part_2_item': '증강현실영상 투영 시스템',
-                'part_2_desc': '원천 기술 확보',
-                'part_note': '국가 주요 기관과의 협력을 통해<br>기술의 신뢰성을 높였습니다.',
-                'res_title': '연구 및 디자인 출원',
-                'res_1_item': '멸균 가능 소형 광학기기',
-                'res_pending': '특허 출원 중',
-                'res_2_item': '의료용 형광 촬영기',
-                'res_design': '디자인 등록 출원',
-                'res_3_item': '의료용 오염 방지 커버',
-                'ar_desc_1': '스크린이 아닌 환자의 피부 위에 직접 투사합니다.',
-                'ar_desc_2_pre': '세계 최초',
-                'ar_desc_2_hl': '증강현실(AR) 영상 투영 시스템',
-                'ar_desc_2_post': '특허 보유',
-                'ar_btn': '미래 기술 더 알아보기',
-                'footer_desc': '혁신적인 의료 기술로 더 나은 수술 환경을 만들어갑니다.<br>제품 데모 신청 및 견적 문의는 언제든 환영합니다.',
-                'addr': '경기도 안양시 동안구 시민대로 401 1602호'
+        // --- 데이터 상수 (Constants) ---
+        const CONTENT = {
+          ko: {
+            nav: {
+              why: 'Why Lumino',
+              product: 'Product',
+              tech: 'Technology',
+              contact: 'Contact Us',
             },
-            'en': {
-                'nav_why': 'Why Lumino',
-                'nav_product': 'Product',
-                'nav_tech': 'Technology',
-                'nav_contact': 'Contact Us',
-                'hero_title_1': 'Fits in one hand',
-                'hero_title_2': 'Wireless ICG Projector',
-                'hero_desc': 'Overcome the limitations of complex operating rooms. LuminoImager C offers a new surgical experience with wireless freedom and overwhelming portability.',
-                'hero_btn_more': 'Learn More',
-                'hero_btn_contact': 'Inquire',
-                'prob_title': 'Limitations of Existing ICG Equipment',
-                'prob_desc': 'Why was innovation needed? Expensive, bulky equipment was a burden for hospitals and medical staff.',
-                'prob_1_title': 'High Cost',
-                'prob_1_desc': 'Expensive overseas equipment costing hundreds of thousands of dollars was a major barrier to entry.',
-                'prob_2_title': 'Space Constraints',
-                'prob_2_desc': 'Large, heavy cart-type equipment is difficult to move in narrow operating rooms and takes up significant space.',
-                'prob_3_title': 'Distraction',
-                'prob_3_desc': 'Checking a separate monitor during surgery distracts the surgeon and lowers concentration.',
-                'sol_title': 'Innovative All-in-One Solution',
-                'sol_desc': 'We have overcome all limitations. LuminoImager C is the only choice that captures performance, affordability, and convenience.',
-                'sol_1_desc': 'Battery-integrated wireless design and lightweight for freedom anywhere in the OR.',
-                'sol_2_desc': 'Direct view of the affected area via device LCD. Minimize eye movement.',
-                'sol_3_desc': 'Maintained performance with proprietary localized technology and removed price bubbles.',
-                'tech_title': 'Technology that makes<br>the invisible visible',
-                'tech_desc': 'Provides 3 imaging modes optimized for surgical situations to aid accurate judgment.',
-                'tech_1_desc': 'Clear color images identical to the naked eye for overall site identification.',
-                'tech_2_desc': 'Identifies fine blood vessels and lymph nodes by emitting only ICG markers in white.',
-                'tech_3_desc': 'Simultaneously identify location by synthesizing fluorescence signals in green on color images.',
-                'func_title': 'User-Centric Precision Functions',
-                'func_1_title': 'Precise Focus Control',
-                'func_1_desc': 'Secure depth quickly and accurately with Auto Focus and manual focus.',
-                'func_2_title': 'LED Intensity Control',
-                'func_2_desc': 'Finely adjust brightness in 8 levels according to the surgical environment.',
-                'func_3_title': 'One-Touch Recording',
-                'func_3_desc': 'Capture procedural scenes and record video immediately with a single button.',
-                'func_4_title': 'USB-C Connectivity',
-                'func_4_desc': 'Easy data transfer and management to PC and mobile devices.',
-                'cred_title': 'Proven Technology, Recognized Innovation',
-                'cred_desc': 'We are setting new standards in the medical device market with prestigious awards and a solid patent portfolio.',
-                'award_title': 'Winner of 2025 IR52 Jang Young-shil Award',
-                'award_desc': 'Innovative product recognized for technological excellence (Selected in Week 44, 2025)',
-                'pat_1_title': 'Core Patent Registration',
-                'pat_1_item_1': 'Augmented Reality Projection Device',
-                'pat_1_item_2': 'White Excitation Light Generation',
-                'pat_kr': 'Korean Patent Registered',
-                'pat_us': 'US Patent Registered',
-                'part_title': 'Strategic Partnership',
-                'part_1_item': 'National Cancer Center Tech Coop',
-                'part_1_desc': 'Exclusive License Agreement Signed',
-                'part_2_item': 'AR Image Projection System',
-                'part_2_desc': 'Original Technology Secured',
-                'part_note': 'We have increased reliability through cooperation<br>with major national institutions.',
-                'res_title': 'Research & Design Application',
-                'res_1_item': 'Sterilizable Small Optical Device',
-                'res_pending': 'Patent Pending',
-                'res_2_item': 'Medical Fluorescence Camera',
-                'res_design': 'Design Registration Application',
-                'res_3_item': 'Medical Contamination Prevention Cover',
-                'ar_desc_1': 'Projects directly onto the patient\'s skin, not a screen.',
-                'ar_desc_2_pre': 'Holding the world\'s first',
-                'ar_desc_2_hl': 'Augmented Reality (AR) image projection system',
-                'ar_desc_2_post': 'patent',
-                'ar_btn': 'Learn More About Future Tech',
-                'footer_desc': 'Creating a better surgical environment with innovative medical technology.<br>Product demo requests and inquiries are always welcome.',
-                'addr': '1602, 401, Simin-daero, Dongan-gu, Anyang-si, Gyeonggi-do, Korea'
-            }
+            hero: {
+              badge: 'NEW STANDARD IN SURGERY',
+              title1: '한 손에 들어오는',
+              title2: '무선 ICG 프로젝터',
+              desc: '복잡한 수술실의 한계를 넘어섭니다. 루미노이미저 C는 선이 없는 자유로움과 압도적인 휴대성으로 새로운 수술 경험을 제공합니다.',
+              cta: '제품 자세히 보기',
+              contact: '문의하기',
+            },
+            productP: {
+              badge: 'NEW PRODUCT',
+              title: '세계 최초 핸디형 무선 ICG 프로젝터, 루미노이미저 P',
+              desc: '형광표지자에 근적외선을 비추고 포착된 형광표지자를 발광위치에 맨 눈으로 볼 수 있도록 투시하는 세계 최초 의료기기입니다.',
+              link: '자세한 상담 문의하기',
+            },
+            problem: {
+              title: '기존 ICG 장비의 한계',
+              desc: '왜 혁신이 필요했을까요? 기존의 고가, 대형 장비들은 병원과 의료진에게 부담이었습니다.',
+              items: [
+                { title: '높은 도입 비용', desc: '1억~3억 원에 달하는 고가의 해외 장비는 진입 장벽이었습니다.' },
+                { title: '공간 제약', desc: '크고 무거운 카트형 장비는 좁은 수술실 내 이동이 어렵습니다.' },
+                { title: '시선 분산', desc: '별도의 모니터를 확인해야 하므로 집도의의 시선이 분산됩니다.' },
+              ],
+            },
+            solution: {
+              badge: 'OUR SOLUTION',
+              title: '혁신적인 올인원 솔루션',
+              desc: '모든 한계를 뛰어넘었습니다. 루미노이미저 C는 성능과 경제성, 편의성을 모두 잡은 유일한 선택입니다.',
+              features: [
+                { title: 'Wireless', desc: '배터리 내장형 무선 설계로 선 없는 자유로움' },
+                { title: 'Handy', desc: '가벼운 무게와 인체공학적 핸디형 디자인' },
+                { title: 'Direct View', desc: '장치 LCD를 통해 환부를 직접 보듯 확인' },
+                { title: 'Cost Effective', desc: '독자적 국산화 기술로 가격 거품 제거' },
+              ],
+            },
+            tech: {
+              badge: 'VISUALIZATION',
+              title: '보이지 않는 것을 보이게 하는 기술',
+              desc: '수술 상황에 최적화된 3가지 이미징 모드를 제공하여 정확한 판단을 돕습니다.',
+              modes: [
+                { 
+                  title: '컬러 영상 모드', 
+                  color: 'green', 
+                  image: 'images/lumino_mode_color.png',
+                  desc: '육안으로 보이는 환부에 표시자를 형광색으로 합성하여, 발광 위치와 주변부를 종합적으로 확인할 수 있습니다.'
+                },
+                { 
+                  title: '흑백 영상 모드', 
+                  color: 'black', 
+                  image: 'images/lumino_mode_black.png',
+                  desc: '흑백 배경에 표시자만 흰색으로 빛나, 표시자만 명확하게 확인할 수 있습니다.'
+                },
+                { 
+                  title: '3분할 통합 영상 모드', 
+                  color: 'blue', 
+                  image: 'images/lumino_mode_merge.png',
+                  desc: '컬러 형광 영상, 원본 영상, 흑백 영상 총 3가지 영상을 동시에 제공합니다.'
+                },
+              ],
+            },
+            credibility: {
+              badge: 'CREDIBILITY',
+              title: '검증된 기술력, 인정받는 혁신',
+              desc: '국내 최고 권위의 수상과 탄탄한 특허 포트폴리오로 의료기기 시장의 새로운 기준을 만들어갑니다.',
+              awards: [
+                { title: '2025 IR52 장영실상 수상', desc: '', tag: 'GRAND PRIZE' },
+                { title: '2025 ICT특허경영대상 수상', desc: '', tag: 'EXCELLENCE' },
+              ],
+              track: {
+                  count: '24',
+                  label: 'Hospitals',
+                  title: '상급종합병원 24대 납품',
+                  desc: '국내 빅 5 병원을 포함하여 전국 24개 상급종합병원에 공급을 완료했습니다.'
+              },
+              lists: {
+                  patents: {
+                      title: '핵심 특허 등록',
+                      items: [
+                          { name: '증강현실 투영장치', status: '국내/미국 등록' },
+                          { name: '백색 여기광 생성 장치 및 그 방법', status: '국내/미국 등록' },
+                      ]
+                  },
+                  partners: {
+                      title: '전략적 파트너십',
+                      items: [
+                          { name: '증강현실영상 투영 시스템 특허', status: '전용실시권', note: '* 특허권자: 국립암센터와 전용실시권 계약' },
+                      ]
+                  },
+                  research: {
+                      title: '연구 및 출원',
+                      items: [
+                          { name: '멸균 상태로 사용할 수 있는 소형 광학기기', status: '출원' },
+                          { name: '의료용 형광 촬영기', status: '디자인등록' },
+                          { name: '의료용 오염 방지 커버', status: '디자인등록' },
+                      ]
+                  }
+              }
+            },
+            footer: {
+              desc: '혁신적인 의료 기술로 더 나은 수술 환경을 만들어갑니다.',
+              address: '경기도 안양시 동안구 시민대로 401 1602호',
+            },
+          },
+          en: {
+            nav: {
+              why: 'Why Lumino',
+              product: 'Product',
+              tech: 'Technology',
+              contact: 'Contact Us',
+            },
+            hero: {
+              badge: 'NEW STANDARD IN SURGERY',
+              title1: 'Fits in one hand',
+              title2: 'Wireless ICG Projector',
+              desc: 'Overcome the limitations of complex operating rooms. LuminoImager C offers a new surgical experience with wireless freedom.',
+              cta: 'Learn More',
+              contact: 'Inquire',
+            },
+            productP: {
+              badge: 'NEW PRODUCT',
+              title: "World's First Handheld Wireless ICG Projector, LuminoImager P",
+              desc: 'The world\'s first handy wireless ICG projector that projects the captured signal directly onto the emission site for naked-eye visibility.',
+              link: 'Inquire for Details',
+            },
+            problem: {
+              title: 'Limitations of Existing ICG Equipment',
+              desc: 'Why was innovation needed? Expensive, bulky equipment was a burden for hospitals.',
+              items: [
+                { title: 'High Cost', desc: 'Expensive overseas equipment was a major barrier to entry.' },
+                { title: 'Space Constraints', desc: 'Large, heavy cart-type equipment takes up significant space.' },
+                { title: 'Distraction', desc: 'Checking a separate monitor lowers surgeon concentration.' },
+              ],
+            },
+            solution: {
+              badge: 'OUR SOLUTION',
+              title: 'Innovative All-in-One Solution',
+              desc: 'LuminoImager C is the only choice that captures performance, affordability, and convenience.',
+              features: [
+                { title: 'Wireless', desc: 'Battery-integrated wireless design.' },
+                { title: 'Handy', desc: 'Lightweight and ergonomic design.' },
+                { title: 'Direct View', desc: 'Direct view via device LCD. Minimize eye movement.' },
+                { title: 'Cost Effective', desc: 'Proprietary technology removes price bubbles.' },
+              ],
+            },
+            tech: {
+              badge: 'VISUALIZATION',
+              title: 'Making the invisible visible',
+              desc: 'Provides 3 imaging modes optimized for surgical situations.',
+              modes: [
+                { 
+                  title: 'Color Imaging Mode', 
+                  color: 'green', 
+                  image: 'images/lumino_mode_color.png',
+                  desc: 'Synthesizes fluorescent markers onto the visible surgical field, allowing comprehensive verification of the emission site and surrounding area.'
+                },
+                { 
+                  title: 'Grayscale Imaging Mode', 
+                  color: 'black', 
+                  image: 'images/lumino_mode_black.png',
+                  desc: 'Markers glow white against a black-and-white background, enabling clear identification of markers only.'
+                },
+                { 
+                  title: '3-Split Integrated Mode', 
+                  color: 'blue', 
+                  image: 'images/lumino_mode_merge.png',
+                  desc: 'Simultaneously provides 3 types of images: Color fluorescence image, Original image, and Grayscale image.'
+                },
+              ],
+            },
+            credibility: {
+              badge: 'CREDIBILITY',
+              title: 'Proven Technology',
+              desc: 'Setting new standards with prestigious awards and a solid patent portfolio.',
+              awards: [
+                { title: '2025 IR52 Jang Young-shil Award', desc: '', tag: 'GRAND PRIZE' },
+                { title: '2025 ICT Patent Management Award', desc: '', tag: 'EXCELLENCE' },
+              ],
+              track: {
+                  count: '24',
+                  label: 'Hospitals',
+                  title: 'Supplied to 24 Tertiary Hospitals',
+                  desc: 'Supply completed to 24 tertiary general hospitals nationwide.'
+              },
+              lists: {
+                  patents: {
+                      title: 'Core Patents',
+                      items: [
+                          { name: 'Augmented reality projection device', status: 'Registered (KR/US)' },
+                          { name: 'Apparatus of generating white excitation light and method thereof', status: 'Registered (KR/US)' },
+                      ]
+                  },
+                  partners: {
+                      title: 'Strategic Partnership',
+                      items: [
+                          { name: 'AR Projection System Patent', status: 'Exclusive License', note: '* Patent holder: Exclusive license contract with National Cancer Center' },
+                      ]
+                  },
+                  research: {
+                      title: 'Research & Design',
+                      items: [
+                          { name: 'Handheld optical device used in sterile condition', status: 'Pending' },
+                          { name: 'Medical Fluorescence Camera', status: 'Design Registered' },
+                          { name: 'Medical Anti-contamination Cover', status: 'Design Registered' },
+                      ]
+                  }
+              }
+            },
+            footer: {
+              desc: 'Creating a better surgical environment with innovative medical technology.',
+              address: '1602, 401, Simin-daero, Dongan-gu, Anyang-si, Gyeonggi-do, Korea',
+            },
+          },
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Scroll Reveal Observer
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+        const ProblemIcons = [Coins, Box, MonitorOff];
+        const SolutionIcons = [Wifi, Feather, Eye, Coins];
+        const ListIcons = [ScrollText, Building2, Microscope];
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            }, observerOptions);
+        // --- 컴포넌트 ---
 
-            const revealElements = document.querySelectorAll('.reveal-up');
-            revealElements.forEach(el => observer.observe(el));
-            
-            // Mobile Menu
-            const menuBtn = document.querySelector('button.md\\:hidden');
-            if(menuBtn) {
-                menuBtn.addEventListener('click', () => {
-                   alert('모바일 메뉴 준비 중입니다.\nMobile menu coming soon.');
-                });
+        // 1. Navbar
+        const Navbar = ({ lang, setLang, content }) => {
+          const [isScrolled, setIsScrolled] = useState(false);
+          const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+          useEffect(() => {
+            const handleScroll = () => setIsScrolled(window.scrollY > 50);
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          useEffect(() => {
+            if (isMobileMenuOpen) {
+              document.body.style.overflow = 'hidden';
+            } else {
+              document.body.style.overflow = 'unset';
             }
+          }, [isMobileMenuOpen]);
 
-            // Language Toggle Logic
-            const langToggleBtn = document.getElementById('langToggle');
-            const langText = document.getElementById('langText');
-            let currentLang = 'ko'; // Default
+          return (
+            <React.Fragment>
+              <nav className={`fixed w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-brand-dark/90 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent py-6'}`}>
+                <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+                  {/* Logo */}
+                  <a href="#" className="flex items-center gap-2 group relative z-50">
+                    <img src="images/lumino_logo_white.png" alt="LuminoMedicine Logo" className="h-8 w-auto" />
+                  </a>
 
-            langToggleBtn.addEventListener('click', () => {
-                currentLang = currentLang === 'ko' ? 'en' : 'ko';
-                updateLanguage(currentLang);
-            });
+                  {/* Desktop Links */}
+                  <div className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide text-slate-300">
+                    <a href="#product-p" className="text-white hover:text-brand-500 transition-colors font-semibold relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-brand-500 after:transition-all hover:after:w-full">New Product</a>
+                    <a href="#problem" className="hover:text-white transition-colors">{content.nav.why}</a>
+                    <a href="#solution" className="hover:text-white transition-colors">{content.nav.product}</a>
+                    <a href="#technology" className="hover:text-white transition-colors">{content.nav.tech}</a>
+                    <a href="#contact" className="px-6 py-2 bg-white text-brand-dark hover:bg-slate-200 rounded-full transition-all font-semibold">
+                      {content.nav.contact}
+                    </a>
+                    <button 
+                      onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 hover:bg-white/10 transition-colors text-xs font-bold text-slate-300"
+                    >
+                      <Globe className="w-3.5 h-3.5" />
+                      {lang === 'ko' ? 'EN' : 'KO'}
+                    </button>
+                  </div>
 
-            function updateLanguage(lang) {
-                // Update Button Text
-                langText.textContent = lang.toUpperCase();
+                  {/* Mobile Menu Toggle */}
+                  <button className="md:hidden text-white relative z-50 p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                    {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                  </button>
+                </div>
+              </nav>
+
+              {/* Full Screen Mobile Menu Overlay */}
+              <AnimatePresence>
+                {isMobileMenuOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: '-100%' }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: '-100%' }}
+                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                    className="fixed inset-0 z-40 bg-brand-dark flex flex-col items-center justify-center gap-8 md:hidden"
+                  >
+                     <div className="absolute top-1/4 -right-20 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                     <div className="absolute bottom-1/4 -left-20 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                     <nav className="flex flex-col items-center gap-8 text-center relative z-10 font-sans">
+                       <a href="#product-p" className="text-3xl font-bold text-white hover:text-brand-500 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>New Product</a>
+                       <a href="#problem" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.why}</a>
+                       <a href="#solution" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.product}</a>
+                       <a href="#technology" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.tech}</a>
+                       <a href="#contact" className="text-2xl font-bold text-brand-500 mt-4" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.contact}</a>
+                       
+                       <div className="w-12 h-[1px] bg-white/10 my-2"></div>
+                       
+                       <button onClick={() => {setLang(lang === 'ko' ? 'en' : 'ko'); setIsMobileMenuOpen(false)}} className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-slate-300">
+                         <Globe className="w-4 h-4" />
+                         <span className="text-lg">Language: <span className="text-white font-bold">{lang.toUpperCase()}</span></span>
+                       </button>
+                     </nav>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </React.Fragment>
+          );
+        };
+
+        // 2. Hero Section
+        const Hero = ({ content }) => {
+          const { scrollY } = useScroll();
+          const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+
+          return (
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-brand-dark pt-20">
+              <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay"></div>
+                <div className="absolute top-[-10%] right-[-10%] w-[300px] md:w-[800px] h-[300px] md:h-[800px] bg-blue-900/20 rounded-full blur-[80px] md:blur-[120px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] left-[-10%] w-[250px] md:w-[600px] h-[250px] md:h-[600px] bg-brand-gold/10 rounded-full blur-[60px] md:blur-[100px]"></div>
+              </div>
+
+              <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
+                <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                  <motion.div 
+                    className="lg:col-span-7 pt-10 md:pt-0"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  >
+                    <motion.div 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="inline-flex items-center gap-3 mb-6 md:mb-8 pl-1"
+                    >
+                      <span className="flex h-2 w-2 relative">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-400"></span>
+                      </span>
+                      <span className="text-brand-500 font-bold tracking-[0.2em] text-[10px] md:text-xs uppercase font-sans">{content.hero.badge}</span>
+                    </motion.div>
+
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] lg:leading-[0.95] text-white tracking-tight mb-6 md:mb-8 break-keep font-sans">
+                      <span className="block">{content.hero.title1}</span>
+                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-blue-200 to-white pb-2">
+                        {content.hero.title2}
+                      </span>
+                    </h1>
+
+                    <p className="text-base md:text-lg lg:text-xl text-slate-400 max-w-xl leading-relaxed mb-8 md:mb-10 font-normal border-l border-brand-500/30 pl-6 break-keep font-sans">
+                      {content.hero.desc}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 font-sans">
+                      <a href="#solution" className="group px-8 py-4 bg-white text-brand-dark rounded-none border border-white font-bold text-lg transition-all hover:bg-brand-500 hover:text-white hover:border-brand-500 flex items-center justify-center gap-2">
+                        {content.hero.cta}
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                      <a href="#contact" className="px-8 py-4 bg-transparent text-white rounded-none border border-white/30 font-bold text-lg transition-all hover:border-white hover:bg-white/5 flex items-center justify-center">
+                        {content.hero.contact}
+                      </a>
+                    </div>
+                  </motion.div>
+
+                  <motion.div 
+                    className="lg:col-span-5 relative hidden lg:block"
+                    style={{ y: y1 }}
+                  >
+                     <div className="relative w-full aspect-square flex items-center justify-center">
+                        <div className="absolute inset-0 border border-white/10 rounded-full"></div>
+                        <div className="absolute inset-[10%] border border-dashed border-brand-500/30 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                        
+                        {/* New Product Image Layer */}
+                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                            <img src="images/lumino.png" alt="LuminoImager" className="w-full h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500" />
+                        </div>
+                     </div>
+                  </motion.div>
+                </div>
+              </div>
+              
+              <motion.div 
+                className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5, duration: 1 }}
+              >
+                <div className="w-[1px] h-12 md:h-16 bg-gradient-to-b from-white to-transparent"></div>
+                <span className="text-[10px] md:text-xs text-slate-500 tracking-widest uppercase font-sans">Scroll</span>
+              </motion.div>
+            </section>
+          );
+        };
+
+        // 3. New Product Section
+        const ProductP = ({ content, lang }) => {
+          return (
+            <section id="product-p" className="py-10 md:py-20 lg:py-32 bg-[#080808] relative overflow-hidden font-sans">
+              <div className="absolute top-0 right-0 w-full md:w-[50%] h-full bg-gradient-to-b md:bg-gradient-to-l from-[#111] to-transparent z-0"></div>
+              
+              <div className="max-w-7xl mx-auto px-6 relative z-10">
+                <div className="flex flex-col lg:flex-row items-center gap-6 md:gap-12 lg:gap-16">
+                  <motion.div 
+                    className="w-full lg:w-1/2"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                  >
+                     {/* Image Container: 30% width on mobile, full on large screens */}
+                     <div className="relative w-full flex flex-col items-center justify-center">
+                          <img 
+                            src="images/lumino_p2.png" 
+                            alt="LuminoImager P" 
+                            className="object-contain w-[80%] h-auto opacity-100 hover:scale-105 transition-transform duration-700 lg:translate-x-6" 
+                          />
+                     </div>
+                  </motion.div>
+
+                  <motion.div 
+                    className="w-full lg:w-1/2 text-left"
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                  >
+                     <span className="inline-block px-4 py-1.5 border border-brand-500/30 rounded-full text-brand-500 text-xs font-bold tracking-widest mb-6">
+                       {content.productP.badge}
+                     </span>
+                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight break-keep tracking-tight">
+                        {/* 직접 타이틀 구조를 제어하여 강조 처리 */}
+                        {lang === 'ko' ? (
+                          <>
+                            <span className="block mb-2">세계 최초 핸디형</span>
+                            <span className="block mb-2">무선 ICG 프로젝터,</span>
+                            {/* Gradient adjusted to start from blue-200 to reduce white range */}
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-blue-500 to-brand-500">
+                                루미노이미저 P
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="block mb-2">World's First</span>
+                            <span className="block mb-2">Handheld Wireless ICG Projector,</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 via-blue-500 to-brand-500">
+                                LuminoImager P
+                            </span>
+                          </>
+                        )}
+                     </h2>
+                     <p className="text-slate-400 text-base md:text-lg mb-10 leading-relaxed border-l-2 border-slate-700 pl-6 break-keep font-normal">
+                       {content.productP.desc}
+                     </p>
+                     <a href="#contact" className="inline-flex items-center gap-3 text-white border-b border-brand-500 pb-1 hover:text-brand-500 transition-colors group">
+                       <span className="text-lg font-bold">{content.productP.link}</span>
+                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                     </a>
+                  </motion.div>
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        // 4. Problem & Solution (Features)
+        const Features = ({ content }) => {
+          return (
+            <section id="problem" className="py-20 lg:py-32 bg-white relative font-sans">
+              <div className="max-w-7xl mx-auto px-6">
                 
-                // Update Document Language
-                document.documentElement.lang = lang;
+                <motion.div 
+                  className="text-center mb-16 md:mb-24 max-w-3xl mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <span className="text-brand-500 font-bold tracking-widest text-xs md:text-sm mb-4 block">THE CHALLENGE</span>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-6 break-keep tracking-tight">{content.problem.title}</h2>
+                  <p className="text-slate-600 text-base md:text-lg break-keep font-normal">{content.problem.desc}</p>
+                </motion.div>
 
-                // Update All Elements with data-i18n
-                const elements = document.querySelectorAll('[data-i18n]');
-                elements.forEach(el => {
-                    const key = el.getAttribute('data-i18n');
-                    if(translations[lang][key]) {
-                        el.innerHTML = translations[lang][key];
-                    }
-                });
-            }
-        });
+                <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-32 md:mb-40">
+                  {content.problem.items.map((item, idx) => {
+                    const Icon = ProblemIcons[idx];
+                    return (
+                      <motion.div 
+                        key={idx}
+                        className="bg-white border border-slate-200 p-8 md:p-10 group hover:border-black transition-colors duration-500 rounded-sm"
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        <div className="w-12 h-12 md:w-14 md:h-14 bg-black rounded-none flex items-center justify-center text-white mb-6 md:mb-8">
+                          <Icon className="w-5 h-5 md:w-6 md:h-6" />
+                        </div>
+                        <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-3 md:mb-4">{item.title}</h3>
+                        <p className="text-slate-600 text-sm leading-relaxed break-keep font-normal">{item.desc}</p>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                <div id="solution" className="relative bg-[#0c0c0c] border border-white/5 overflow-hidden rounded-sm">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-900 via-brand-500 to-brand-900"></div>
+                  
+                  <div className="grid lg:grid-cols-2">
+                    <div className="p-8 md:p-12 lg:p-20 flex flex-col justify-center order-2 lg:order-1">
+                      <span className="text-brand-500 font-bold tracking-widest text-xs md:text-sm mb-4 block">{content.solution.badge}</span>
+                      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-8 break-keep tracking-tight">{content.solution.title}</h2>
+                      <p className="text-slate-400 mb-12 text-base md:text-lg break-keep font-normal">{content.solution.desc}</p>
+
+                      <div className="space-y-8">
+                        {content.solution.features.map((item, idx) => {
+                          const Icon = SolutionIcons[idx];
+                          return (
+                            <motion.div 
+                              key={idx} 
+                              className="flex items-start gap-5 md:gap-6"
+                              initial={{ opacity: 0, x: -20 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: idx * 0.1 }}
+                            >
+                              <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 border border-white/10 bg-white/5 flex items-center justify-center text-brand-400 rounded-sm">
+                                <Icon className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <h4 className="text-white font-bold text-lg mb-1">{item.title}</h4>
+                                <p className="text-slate-500 text-sm break-keep font-normal">{item.desc}</p>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="relative h-64 md:h-96 lg:h-auto bg-black order-1 lg:order-2">
+                      <img 
+                        src="images/lumino_in_surgery.jpg" 
+                        alt="Product in use" 
+                        className="absolute inset-0 w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-[#0c0c0c] to-transparent opacity-60"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+          );
+        };
+
+        // 5. Technology
+        const Technology = ({ content }) => {
+          return (
+            <section id="technology" className="py-20 lg:py-32 bg-white overflow-hidden font-sans">
+               <div className="max-w-7xl mx-auto px-6">
+                  <div className="flex flex-col md:flex-row justify-between items-end mb-16 md:mb-20 border-b border-slate-200 pb-12">
+                    <motion.div 
+                      className="max-w-xl"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                    >
+                      <span className="text-brand-500 font-bold text-xs tracking-[0.2em] uppercase mb-4 block">{content.tech.badge}</span>
+                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 break-keep tracking-tight">{content.tech.title}</h2>
+                      <p className="text-slate-600 text-base md:text-lg break-keep font-normal">{content.tech.desc}</p>
+                    </motion.div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {content.tech.modes.map((mode, idx) => (
+                      <motion.div 
+                        key={idx}
+                        className="group relative"
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        <div className="aspect-[16/10] overflow-hidden bg-slate-100 border border-slate-200 mb-6 relative rounded-sm">
+                          <div className={`absolute inset-0 bg-${mode.color === 'blue' ? 'blue-500' : mode.color === 'green' ? 'green-500' : 'black'} opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10`}></div>
+                          <img 
+                            src={mode.image} 
+                            alt={mode.title} 
+                            className="w-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                          />
+                        </div>
+                        {/* Modified Title Area */}
+                        <div className="flex items-center gap-3">
+                            <div className={`w-2.5 h-2.5 rounded-full ${
+                                mode.color === 'blue' ? 'bg-blue-500 shadow-[0_0_8px_#3b82f6]' : 
+                                mode.color === 'green' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 
+                                'bg-black shadow-[0_0_8px_rgba(0,0,0,0.3)]'
+                            }`}></div>
+                            <h3 className="text-base md:text-lg font-bold text-slate-900 group-hover:text-brand-500 transition-colors">{mode.title}</h3>
+                        </div>
+                        <div className="w-full h-[1px] bg-slate-200 mt-4 mb-4 group-hover:bg-brand-500 transition-colors duration-500 origin-left scale-x-50 group-hover:scale-x-100"></div>
+                        {/* Added Description */}
+                        <p className="text-sm text-slate-600 leading-relaxed font-normal">{mode.desc}</p>
+                      </motion.div>
+                    ))}
+                  </div>
+               </div>
+            </section>
+          );
+        };
+
+        // 6. Credibility
+        const Credibility = ({ content }) => {
+          return (
+            <section className="py-20 lg:py-32 bg-[#050505] relative border-t border-white/5 font-sans">
+              <div className="max-w-7xl mx-auto px-6">
+                
+                <div className="text-center mb-16 md:mb-20">
+                  {/* Added Badge */}
+                  <span className="text-brand-gold font-bold tracking-widest text-xs md:text-sm mb-4 block">{content.credibility.badge}</span>
+                  
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-brand-gold to-yellow-100 mb-6 tracking-tight">
+                    {content.credibility.title}
+                  </h2>
+                  <p className="text-slate-500 text-sm md:text-base break-keep px-4 font-normal">{content.credibility.desc}</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-20 md:mb-24">
+                  {content.credibility.awards.map((award, idx) => (
+                    <motion.div 
+                      key={idx}
+                      className="relative p-8 md:p-10 border border-brand-gold/20 bg-gradient-to-b from-brand-gold/5 to-transparent flex flex-col items-center text-center group hover:border-brand-gold/50 transition-colors rounded-sm"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 md:w-16 md:h-16 bg-[#050505] border border-brand-gold/30 rounded-full flex items-center justify-center text-brand-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                        <Trophy className="w-5 h-5 md:w-6 md:h-6" />
+                      </div>
+                      <span className="mt-4 md:mt-6 text-brand-gold text-[10px] md:text-xs font-bold tracking-widest border border-brand-gold/30 px-2 py-1 mb-4">{award.tag}</span>
+                      <h3 className="text-xl md:text-2xl font-bold text-white mb-2 break-keep">{award.title}</h3>
+                      <p className="text-slate-400 font-normal text-sm break-keep">{award.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="bg-[#0f0f0f] border-y border-white/5 py-12 md:py-16 mb-20 md:mb-24 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:20px_20px]"></div>
+                  <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12 px-6 md:px-20 text-center md:text-left">
+                     <div className="flex-shrink-0 flex flex-col items-center md:items-start">
+                        <span className="text-7xl md:text-8xl font-bold text-white block leading-none">{content.credibility.track.count}</span>
+                        <span className="text-brand-500 uppercase tracking-widest text-sm font-bold pl-1 mt-2 md:mt-0">{content.credibility.track.label}</span>
+                     </div>
+                     <div className="h-[1px] w-full md:w-[1px] md:h-24 bg-white/10 self-center"></div>
+                     <div>
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-3">{content.credibility.track.title}</h3>
+                        <p className="text-slate-400 max-w-lg text-sm md:text-base break-keep font-normal">{content.credibility.track.desc}</p>
+                     </div>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-10 md:gap-12">
+                    {[content.credibility.lists.patents, content.credibility.lists.partners, content.credibility.lists.research].map((list, idx) => {
+                        const Icon = ListIcons[idx];
+                        return (
+                            <div key={idx} className="border-t border-white/10 pt-6 md:pt-8">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Icon className="w-5 h-5 md:w-6 md:h-6 text-brand-600" />
+                                    <h4 className="text-lg md:text-xl font-bold text-white">{list.title}</h4>
+                                </div>
+                                <ul className="space-y-4">
+                                    {list.items.map((item, i) => (
+                                        <li key={i} className="flex flex-col group">
+                                            <div className="flex justify-between items-start w-full">
+                                                <span className="text-slate-300 group-hover:text-white transition-colors text-sm break-keep max-w-[70%] font-normal">{item.name}</span>
+                                                <span className="text-[10px] md:text-xs text-slate-600 border border-slate-800 px-2 py-0.5 rounded ml-2 whitespace-nowrap">{item.status}</span>
+                                            </div>
+                                            {item.note && <span className="text-xs text-slate-500 mt-1">{item.note}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )
+                    })}
+                </div>
+
+              </div>
+            </section>
+          );
+        };
+
+        // 7. Footer
+        const Footer = ({ content }) => {
+          return (
+            <footer id="contact" className="bg-black text-white pt-20 md:pt-24 pb-12 border-t border-white/10 font-sans">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-20">
+                  <div>
+                    <div className="flex items-center gap-2 mb-6 md:mb-8">
+                       <img src="images/lumino_logo.png" alt="LuminoMedicine Logo" className="h-8 w-auto" />
+                    </div>
+                    <p className="text-slate-500 max-w-sm leading-relaxed mb-8 break-keep text-sm md:text-base font-normal">
+                      {content.footer.desc}
+                    </p>
+                    <div className="flex gap-4">
+                       {['#'].map((l, i) => (
+                         <a key={i} href={l} className="w-10 h-10 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-white hover:text-black hover:border-white transition-all rounded-full">
+                           <ArrowRight className="w-4 h-4 -rotate-45" />
+                         </a>
+                       ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-6 pt-4">
+                     <div className="flex items-start gap-4">
+                        <MapPin className="w-6 h-6 text-brand-600 mt-1 flex-shrink-0" />
+                        <span className="text-slate-300 text-base md:text-lg font-light break-keep">{content.footer.address}</span>
+                     </div>
+                     <div className="flex items-center gap-4">
+                        <Phone className="w-6 h-6 text-brand-600 flex-shrink-0" />
+                        <span className="text-slate-300 text-base md:text-lg font-light">070-4727-2510</span>
+                     </div>
+                     <div className="flex items-center gap-4">
+                        <Mail className="w-6 h-6 text-brand-600 flex-shrink-0" />
+                        <span className="text-slate-300 text-base md:text-lg font-light">lm@luminomedison.com</span>
+                     </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-slate-600 gap-4">
+                   <p className="text-center md:text-left">&copy; 2025 LuminoMedicine. All Rights Reserved.</p>
+                   <div className="flex gap-8">
+                     <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                     <a href="#" className="hover:text-white transition-colors">Terms</a>
+                   </div>
+                </div>
+              </div>
+            </footer>
+          );
+        };
+
+        // --- 메인 App 컴포넌트 ---
+        const App = () => {
+          const [lang, setLang] = useState('ko');
+          const content = CONTENT[lang];
+
+          return (
+            <div className="min-h-screen bg-brand-dark text-slate-200 selection:bg-brand-500 selection:text-white font-sans">
+              <Navbar lang={lang} setLang={setLang} content={content} />
+              <main>
+                <Hero content={content} />
+                <ProductP content={content} lang={lang} />
+                <Features content={content} />
+                <Technology content={content} />
+                <Credibility content={content} />
+              </main>
+              <Footer content={content} />
+            </div>
+          );
+        };
+
+        // --- 렌더링 ---
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
     </script>
 </body>
 </html>
