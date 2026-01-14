@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="images/logo_favicon.png"/>
-    <title>Luminomedison</title>
+    <title>Lumino Medison</title>
 
     <!-- 검색엔진용 기본 메타 태그 -->
     <meta name="description" content="루미노메디슨은 한 손에 들 수 있는 무선 ICG 형광 영상 장치 ‘루미노이미저 C’로 암 병변을 실시간으로 시각화하여 수술 정확도를 높이고 의료진의 부담을 줄이는 의료기기 전문 기업입니다." />
@@ -117,7 +117,8 @@
             hero: {
               badge: 'NEW STANDARD IN SURGERY',
               title1: '한 손에 들어오는',
-              title2: '무선 ICG 프로젝터',
+              title2: '무선 의료용',
+              title3: '형광 영상 장치',
               desc: '복잡한 수술실의 한계를 넘어섭니다. 루미노이미저 C는 선이 없는 자유로움과 압도적인 휴대성으로 새로운 수술 경험을 제공합니다.',
               cta: '제품 자세히 보기',
               contact: '문의하기',
@@ -226,7 +227,8 @@
             hero: {
               badge: 'NEW STANDARD IN SURGERY',
               title1: 'Fits in one hand',
-              title2: 'Wireless ICG Projector',
+              title2: 'Wireless Medical',
+              title3: 'Fluorescence Imaging Device',
               desc: 'Overcome the limitations of complex operating rooms. LuminoImager C offers a new surgical experience with wireless freedom.',
               cta: 'Learn More',
               contact: 'Inquire',
@@ -358,7 +360,7 @@
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                   {/* Logo */}
                   <a href="#" className="flex items-center gap-2 group relative z-50">
-                    <img src="images/lumino_logo_white.png" alt="LuminoMedicine Logo" className="h-8 w-auto" />
+                    <img src="images/lumino_logo_white.png" alt="LuminoMedison Logo" className="h-8 w-auto" />
                   </a>
 
                   {/* Desktop Links */}
@@ -434,9 +436,11 @@
               </div>
 
               <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-                <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                <div className="grid lg:grid-cols-12 gap-6 lg:gap-20 items-center">
+                  
+                  {/* Text Column: Order 2 on Mobile, Order 1 on Desktop */}
                   <motion.div 
-                    className="lg:col-span-7 pt-10 md:pt-0"
+                    className="lg:col-span-7 pt-2 md:pt-0 order-2 lg:order-1 relative z-10"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -459,6 +463,9 @@
                       <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-blue-200 to-white pb-2">
                         {content.hero.title2}
                       </span>
+                      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-500 via-blue-200 to-white pb-2">
+                        {content.hero.title3}
+                      </span>
                     </h1>
 
                     <p className="text-base md:text-lg lg:text-xl text-slate-400 max-w-xl leading-relaxed mb-8 md:mb-10 font-normal border-l border-brand-500/30 pl-6 break-keep font-sans">
@@ -476,25 +483,32 @@
                     </div>
                   </motion.div>
 
+                  {/* Image Column: Order 1 on Mobile, Order 2 on Desktop */}
                   <motion.div 
-                    className="lg:col-span-5 relative hidden lg:block"
+                    className="lg:col-span-5 relative block order-1 lg:order-2"
                     style={{ y: y1 }}
                   >
-                     <div className="relative w-full aspect-square flex items-center justify-center">
-                        <div className="absolute inset-0 border border-white/10 rounded-full"></div>
-                        <div className="absolute inset-[10%] border border-dashed border-brand-500/30 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                     <div className="relative w-[80%] aspect-[3/4] lg:w-full lg:aspect-square flex items-center justify-center mx-auto">
+                        {/* Rings: Position absolute centered with inset-0 m-auto for perfect centering without transform conflicts */}
+                        <div className="absolute inset-0 m-auto w-full aspect-square border border-white/10 rounded-full"></div>
+                        <div className="absolute inset-0 m-auto w-[80%] aspect-square border border-dashed border-brand-500/30 rounded-full animate-[spin_30s_linear_infinite]"></div>
                         
                         {/* New Product Image Layer */}
-                        <div className="absolute inset-0 flex items-center justify-center z-20">
-                            <img src="images/lumino.png" alt="LuminoImager" className="w-full h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 flex items-center justify-center z-20 overflow-hidden lg:overflow-visible rounded-2xl lg:rounded-none">
+                            <img 
+                                src="images/lumino.png" 
+                                alt="LuminoImager" 
+                                className="w-full h-full object-cover object-top lg:w-full lg:h-auto lg:object-contain lg:object-center drop-shadow-2xl hover:scale-105 transition-transform duration-500" 
+                            />
                         </div>
                      </div>
                   </motion.div>
+
                 </div>
               </div>
               
               <motion.div 
-                className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 1 }}
@@ -809,7 +823,7 @@
                 <div className="grid md:grid-cols-2 gap-12 md:gap-16 mb-16 md:mb-20">
                   <div>
                     <div className="flex items-center gap-2 mb-6 md:mb-8">
-                       <img src="images/lumino_logo.png" alt="LuminoMedicine Logo" className="h-8 w-auto" />
+                       <img src="images/lumino_logo.png" alt="LuminoMedison Logo" className="h-8 w-auto" />
                     </div>
                     <p className="text-slate-500 max-w-sm leading-relaxed mb-8 break-keep text-sm md:text-base font-normal">
                       {content.footer.desc}
@@ -840,7 +854,7 @@
                 </div>
 
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs md:text-sm text-slate-600 gap-4">
-                   <p className="text-center md:text-left">&copy; 2025 LuminoMedicine. All Rights Reserved.</p>
+                   <p className="text-center md:text-left">&copy; 2025 LuminoMedison. All Rights Reserved.</p>
                    <div className="flex gap-8">
                      <a href="#" className="hover:text-white transition-colors">Privacy</a>
                      <a href="#" className="hover:text-white transition-colors">Terms</a>
@@ -877,4 +891,3 @@
     </script>
 </body>
 </html>
-
