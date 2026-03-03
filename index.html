@@ -113,6 +113,7 @@
               product: 'Product',
               tech: 'Technology',
               contact: 'Contact Us',
+              promo: 'Promotion', // 추가
             },
             hero: {
               badge: 'NEW STANDARD IN SURGERY',
@@ -212,6 +213,11 @@
                   }
               }
             },
+            promo: {
+              badge: 'VIDEO',
+              title: '루미노이미저 C 생생한 활용 영상',
+              desc: '실제 수술 환경에서 루미노이미저 C가 어떻게 활용되는지 영상으로 직접 확인해보세요.'
+            }, // 추가
             footer: {
               desc: '혁신적인 의료 기술로 더 나은 수술 환경을 만들어갑니다.',
               address: '경기도 안양시 동안구 시민대로 401 1602호',
@@ -223,6 +229,7 @@
               product: 'Product',
               tech: 'Technology',
               contact: 'Contact Us',
+              promo: 'Promotion', // 추가
             },
             hero: {
               badge: 'NEW STANDARD IN SURGERY',
@@ -322,6 +329,11 @@
                   }
               }
             },
+            promo: {
+              badge: 'VIDEO',
+              title: 'LuminoImager C in Action',
+              desc: 'See how LuminoImager C is utilized in actual surgical environments through our video.'
+            }, // 추가
             footer: {
               desc: 'Creating a better surgical environment with innovative medical technology.',
               address: '1602, 401, Simin-daero, Dongan-gu, Anyang-si, Gyeonggi-do, Korea',
@@ -369,6 +381,7 @@
                     <a href="#problem" className="hover:text-white transition-colors">{content.nav.why}</a>
                     <a href="#solution" className="hover:text-white transition-colors">{content.nav.product}</a>
                     <a href="#technology" className="hover:text-white transition-colors">{content.nav.tech}</a>
+                    <a href="#promotion" className="hover:text-white transition-colors">{content.nav.promo}</a>
                     <a href="#contact" className="px-6 py-2 bg-white text-brand-dark hover:bg-slate-200 rounded-full transition-all font-semibold">
                       {content.nav.contact}
                     </a>
@@ -406,8 +419,9 @@
                        <a href="#problem" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.why}</a>
                        <a href="#solution" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.product}</a>
                        <a href="#technology" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.tech}</a>
+                       <a href="#promotion" className="text-2xl font-light text-slate-300 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.promo}</a>
                        <a href="#contact" className="text-2xl font-bold text-brand-500 mt-4" onClick={() => setIsMobileMenuOpen(false)}>{content.nav.contact}</a>
-                       
+
                        <div className="w-12 h-[1px] bg-white/10 my-2"></div>
                        
                        <button onClick={() => {setLang(lang === 'ko' ? 'en' : 'ko'); setIsMobileMenuOpen(false)}} className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 text-slate-300">
@@ -814,6 +828,34 @@
             </section>
           );
         };
+        
+        // 6.5 Promotion
+        const Promotion = ({ content }) => {
+          return (
+            <section id="promotion" className="py-20 lg:py-32 bg-[#0a0a0a] border-t border-white/5 relative font-sans">
+               <div className="max-w-7xl mx-auto px-6">
+                 <div className="text-center mb-12 md:mb-16">
+                    <span className="text-brand-500 font-bold tracking-widest text-xs md:text-sm mb-4 block">{content.promo.badge}</span>
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 break-keep tracking-tight">{content.promo.title}</h2>
+                    <p className="text-slate-400 text-base md:text-lg break-keep font-normal">{content.promo.desc}</p>
+                 </div>
+                 
+                 {/* 유튜브 iframe 컨테이너 (비율 유지) */}
+                 <div className="relative w-full max-w-5xl mx-auto aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                    <iframe 
+                      className="absolute top-0 left-0 w-full h-full"
+                      src="https://www.youtube-nocookie.com/embed/KjubPL7WN_0?controls=0" 
+                      title="YouTube video player" 
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen>
+                    </iframe>
+                 </div>
+               </div>
+            </section>
+          );
+        };
 
         // 7. Footer
         const Footer = ({ content }) => {
@@ -867,7 +909,15 @@
 
         // --- 메인 App 컴포넌트 ---
         const App = () => {
-          const [lang, setLang] = useState('ko');
+          // const [lang, setLang] = useState('ko');
+          // const content = CONTENT[lang];
+
+          // 수정된 부분: URL 파라미터에서 lang 값을 읽어오고, 없거나 en이 아니면 무조건 ko로 설정합니다.
+          const queryParams = new URLSearchParams(window.location.search);
+          const urlLang = queryParams.get('lang');
+          const initialLang = (urlLang === 'en') ? 'en' : 'ko'; 
+          
+          const [lang, setLang] = useState(initialLang);
           const content = CONTENT[lang];
 
           return (
@@ -879,6 +929,7 @@
                 <Features content={content} />
                 <Technology content={content} />
                 <Credibility content={content} />
+                <Promotion content={content} />
               </main>
               <Footer content={content} />
             </div>
