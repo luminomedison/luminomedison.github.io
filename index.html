@@ -516,9 +516,9 @@
               </div>
 
               {/* Award Badge — SVG image */}
-              <div className="award-badge-float">
+              <a href="#credibility" className="award-badge-float cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold/80" aria-label="Go to credibility section">
                 <img className="badge-img" src="images/badge.png" alt="MedTech Innovator Asia Pacific 2026 TOP 20" />
-              </div>
+              </a>
 
               <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
                 <div className="grid lg:grid-cols-12 gap-6 lg:gap-20 items-center">
@@ -554,10 +554,10 @@
                     </h1>
 
                     {/* Award Pill — always visible */}
-                    <div className="award-badge-pill">
+                    <a href="#credibility" className="award-badge-pill cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold/80" aria-label="Go to credibility section">
                       <Trophy style={{color: '#d4af37', width: '16px', height: '16px'}} />
                       <span className="award-badge-pill-text">2026 MedTech Innovator Asia Pacific TOP 20</span>
-                    </div>
+                    </a>
 
                     <p className="text-base md:text-lg lg:text-xl text-slate-400 max-w-xl leading-relaxed mb-8 md:mb-10 font-normal border-l border-brand-500/30 pl-6 break-keep font-sans">
                       {content.hero.desc}
@@ -829,7 +829,7 @@
         // 6. Credibility
         const Credibility = ({ content }) => {
           return (
-            <section className="py-20 lg:py-32 bg-[#050505] relative border-t border-white/5 font-sans">
+            <section id="credibility" className="scroll-mt-24 py-20 lg:py-32 bg-[#050505] relative border-t border-white/5 font-sans">
               <div className="max-w-7xl mx-auto px-6">
                 
                 <div className="text-center mb-16 md:mb-20">
